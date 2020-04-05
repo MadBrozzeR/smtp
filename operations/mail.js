@@ -15,7 +15,7 @@ const listeners = {
     let error;
     let regMatch;
 
-    if (session.origin) {
+    if (session.data.origin) {
       if (regMatch = FROM_RE.exec(message)) {
         this.params.from = regMatch[1];
 
@@ -38,17 +38,17 @@ const listeners = {
     }
 
     if (error) {
-      this.trigger('error', error);
+      this.queue.trigger('error', error);
     } else {
       session.smtp.listeners.from instanceof Function
         ? session.smtp.listeners.from.call(session, this.params.from, this.params.size)
-        : this.trigger('success');
+        : this.queue.trigger('success');
     }
   },
 
   error: function (code) {
     this.params.session.send(code, ERROR[code]);
-    this.next();
+    this.queue.next();
   },
 
   success: function (message) {
@@ -57,7 +57,7 @@ const listeners = {
     session.data.size = size;
 
     session.ok(message);
-    this.next();
+    this.queue.next();
   }
 };
 

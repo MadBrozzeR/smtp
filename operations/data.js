@@ -15,14 +15,14 @@ const listeners = {
     this.params.data = '';
     this.params.size = 0;
 
-    if (session.recipients.length) {
+    if (session.data.recipients.length) {
       // Start.
       session.smtp.listeners.data instanceof Function
         ? session.smtp.listeners.data.call(session)
         : session.send(354, MESSAGE.DATA_INPUT);
     } else {
       // Deny if RCPT command has not been received.
-      this.trigger('error', 503);
+      this.queue.trigger('error', 503);
     }
   },
 
@@ -39,18 +39,18 @@ const listeners = {
 
         session.smtp.listeners.mail instanceof Function
           ? session.smtp.listeners.mail.call(session, this.params.data)
-          : this.trigger('success')
+          : this.queue.trigger('success')
       } else {
         this.params.data += replaceDDot(message);
       }
     } else {
-      this.trigger('error', 552);
+      this.queue.trigger('error', 552);
     }
   },
 
   error: function (code) {
     this.params.session.send(code, ERROR[code]);
-    this.next();
+    this.queue.next();
   },
 
   success: function (message) {
@@ -58,7 +58,7 @@ const listeners = {
 
     session.data.message = data;
     session.ok(message);
-    this.next();
+    this.queue.next();
   }
 };
 

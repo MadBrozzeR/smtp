@@ -1,6 +1,5 @@
 const net = require('net');
 const Session = require('./session.js');
-const {useTemplate} = require('./utils.js');
 
 const DEFAULT_CONFIG = {
   port: 25,
@@ -21,7 +20,9 @@ function connectionListener (socket) {
   socket.on('close', function () {
     (smtp.listeners.disconnect instanceof Function) && smtp.listeners.disconnect.call(session, socket);
   });
-  socket.on('error', console.error); // TODO Make proper logging
+  socket.on('error', function (error) {
+    (smtp.listeners.error instanceof Function) && smtp.listeners.error.call(session, error)
+  });
 
   session.connection();
 }
@@ -39,3 +40,5 @@ Server.prototype.stop = function () {
   this.server.close();
   return this;
 }
+
+module.exports = Server;

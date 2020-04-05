@@ -19,7 +19,7 @@ const listeners = {
     }
 
     session.ok(message);
-    this.next();
+    this.queue.next();
   }
 };
 

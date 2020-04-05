@@ -4,14 +4,15 @@ const {MESSAGE} = require('../constants.js');
 const listeners = {
   init: function () {
     const {session, args} = this.params;
+    const commands = index.COMMANDS;
 
     if (args.length === 0) {
-      session.send(211, Object.keys(index));
-      this.next();
+      session.send(211, Object.keys(commands));
+      this.queue.next();
     } else {
       const command = args[0];
-      if (index[command]) {
-        const help = index[command].help;
+      if (commands[command]) {
+        const help = commands[command].help;
 
         if (help) {
           const result = [
@@ -19,19 +20,19 @@ const listeners = {
             help.desc
           ];
           help.example && result.push(help.example);
-          this.trigger('success', result);
+          this.queue.trigger('success', result);
         } else {
-          this.trigger('success', MESSAGE.NO_HELP);
+          this.queue.trigger('success', MESSAGE.NO_HELP);
         }
       } else {
-        this.trigger('success', MESSAGE.UNKNOWN_COMMAND);
+        this.queue.trigger('success', MESSAGE.UNKNOWN_COMMAND);
       }
     }
   },
 
   success: function (message) {
     this.params.session.send(214, message);
-    this.next();
+    this.queue.next();
   }
 };
 

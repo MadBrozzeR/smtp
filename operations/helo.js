@@ -15,15 +15,15 @@ const listeners = {
       this.params.origin = args[0];
       session.smtp.listeners.helo instanceof Function
         ? session.smtp.listeners.helo.call(session, args[0])
-        : this.trigger('success');
+        : this.queue.trigger('success');
     } else {
-      this.trigger('error', 501);
+      this.queue.trigger('error', 501);
     }
   },
 
   error: function (code) {
     this.params.session.send(code, ERROR[code]);
-    this.next();
+    this.queue.next();
   },
 
   success: function (message) {
@@ -33,7 +33,7 @@ const listeners = {
     message || (message = getHelloMessage(session));
 
     session.ok(message);
-    this.next();
+    this.queue.next();
   }
 };
 

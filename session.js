@@ -64,7 +64,7 @@ Session.prototype.send = function (code, message) {
 
   return this;
 }
-Session,prototype.ok = function (message) {
+Session.prototype.ok = function (message) {
   this.send(250, message);
 
   return this;
@@ -100,3 +100,5 @@ Session.prototype.debug = function (type, message) {
     debug.call(this.smtp, type, message.toString(), this);
   }
 }
+
+module.exports = Session;

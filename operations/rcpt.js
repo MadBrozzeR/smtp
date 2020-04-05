@@ -10,34 +10,35 @@ const listeners = {
   init: function () {
     const {session, message} = this.params;
 
-    if (session.data.from) {
+    if (session.data.from === undefined) {
+      // Deny if MAIL command has not been received.
+      this.queue.trigger('error', 503);
+    } else {
       const regMatch = TO_RE.exec(message);
 
       if (regMatch) {
         this.params.recipient = regMatch[1];
         session.smtp.listeners.to instanceof Function
           ? session.smtp.listeners.to.call(session, recipient)
-          : this.trigger('success');
+          : this.queue.trigger('success');
       } else {
         // Deny if recipient has not been proveded.
-        this.trigger('error', 501);
+        this.queue.trigger('error', 501);
       }
-    } else {
-      // Deny if MAIL command has not been received.
-      this.trigger('error', 503);
     }
   },
 
   error: function (code) {
     this.params.session.send(code, ERROR[code]);
-    this.next();
+    this.queue.next();
   },
 
   success: function (message) {
     const {session, recipient} = this.params;
 
     session.data.recipients.push(recipient);
-    this.next();
+    session.ok(message);
+    this.queue.next();
   }
 };
 

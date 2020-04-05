@@ -7,14 +7,14 @@ const listeners = {
 
     session.smtp.listeners.connect instanceof Function
       ? session.smtp.listeners.connect.call(session, socket)
-      : this.trigger('success');
+      : this.queue.trigger('success');
   },
 
   success: function (message) {
     const session = this.params.session;
     message || (message = useTemplate(MESSAGE.GREETING, session.smtp.config));
     session.send(220, message);
-    this.next();
+    this.queue.next();
   }
 };
 

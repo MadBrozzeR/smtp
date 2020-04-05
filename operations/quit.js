@@ -3,7 +3,7 @@ const listeners = {
     this.params.session.send(221);
     this.params.session.end();
 
-    this.next();
+    this.queue.next();
   }
 };
 

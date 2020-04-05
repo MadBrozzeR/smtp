@@ -2,7 +2,7 @@ const listeners = {
   init: function () {
     this.params.session.initialize();
     this.params.session.ok();
-    this.next();
+    this.queue.next();
   }
 };
 
