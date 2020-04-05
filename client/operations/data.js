@@ -31,6 +31,7 @@ module.exports = {
       }
     }
   },
+
   error: common.error,
   success: common.success
 };

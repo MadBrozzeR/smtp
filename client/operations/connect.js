@@ -1,5 +1,5 @@
 const dns = require('dns');
-const {mxSorter, mxMapper} = require('../utils.js');
+const {mxSorter, mxMapper} = require('../../utils.js');
 
 module.exports = {
   init: function () {

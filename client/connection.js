@@ -1,8 +1,7 @@
 const Queue = require('mbr-queue').NetQueue;
 const net = require('net');
 const operations = require('./operations/index.js');
-const {parseResponse} = require('./utils.js');
-const {generateString} = require('../utils.js');
+const {generateString, parseResponse} = require('../utils.js');
 
 const CRLF = '\r\n';
 
