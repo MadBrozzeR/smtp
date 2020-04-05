@@ -17,8 +17,8 @@ const listeners = {
 
     if (session.data.recipients.length) {
       // Start.
-      session.smtp.listeners.data instanceof Function
-        ? session.smtp.listeners.data.call(session)
+      session.smtp.listeners.dataStart instanceof Function
+        ? session.smtp.listeners.dataStart.call(session)
         : session.send(354, MESSAGE.DATA_INPUT);
     } else {
       // Deny if RCPT command has not been received.

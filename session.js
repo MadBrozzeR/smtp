@@ -2,11 +2,13 @@ const Queue = require('mbr-queue').NetQueue;
 
 const {COMMANDS, Connection} = require('./operations/index.js');
 const {DEBUG_STATE, MESSAGE} = require('./constants.js');
+const {generateString} = require('./utils.js');
 
 const CRLF = '\r\n';
 
 function Session (socket, smtp) {
   socket.setTimeout(smtp.config.timeout, function () {socket.end();});
+  this.id = generateString();
   this.socket = socket;
   this.smtp = smtp;
   this.queue = new Queue();
@@ -26,6 +28,10 @@ Session.prototype.onData = function (chunk) {
     const message = chunk.toString().trim();
     const args = message.split(' ');
     const command = args.shift().toUpperCase();
+
+    if (session.smtp.listeners.message instanceof Function) {
+      session.smtp.listeners.message.call(session, message);
+    }
 
     this.debug(DEBUG_STATE.CLIENT, message);
 

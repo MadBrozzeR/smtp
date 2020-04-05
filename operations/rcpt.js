@@ -19,7 +19,7 @@ const listeners = {
       if (regMatch) {
         this.params.recipient = regMatch[1];
         session.smtp.listeners.to instanceof Function
-          ? session.smtp.listeners.to.call(session, recipient)
+          ? session.smtp.listeners.to.call(session, regMatch[1])
           : this.queue.trigger('success');
       } else {
         // Deny if recipient has not been proveded.

@@ -32,4 +32,22 @@ function replaceDDot (message) {
   return message.replace(DDOT_RE, '$1.');
 }
 
-module.exports = {useTemplate, getHelloMessage, replaceDDot, checkSize};
+const SYMBOLS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
+
+function generateString (length = 20, symbols = SYMBOLS) {
+  let result = '';
+
+  while (length--) {
+    result += symbols[Math.floor(Math.random() * symbols.length)];
+  }
+
+  return result;
+}
+
+module.exports = {
+  useTemplate,
+  getHelloMessage,
+  replaceDDot,
+  checkSize,
+  generateString
+};

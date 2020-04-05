@@ -6,7 +6,7 @@ const listeners = {
     const session = this.params.session;
 
     session.smtp.listeners.connect instanceof Function
-      ? session.smtp.listeners.connect.call(session, socket)
+      ? session.smtp.listeners.connect.call(session, session.socket)
       : this.queue.trigger('success');
   },
 

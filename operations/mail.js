@@ -54,7 +54,7 @@ const listeners = {
   success: function (message) {
     const {session, from, size} = this.params;
     session.data.from = from;
-    session.data.size = size;
+    size && (session.data.size = size);
 
     session.ok(message);
     this.queue.next();
