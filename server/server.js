@@ -32,8 +32,12 @@ function Server (config = {}, listeners = {}) {
   this.server = net.createServer(connectionListener.bind(this));
   this.listeners = listeners;
 }
+Server.prototype.on = function (listeners) {
+  listeners && Object.assign(this.listeners, listeners);
+  return this;
+}
 Server.prototype.start = function () {
-  this.server.listen(this.config.port, this.config.host);
+  this.server.listen(this.config.port, this.config.host, this.listeners.start);
   return this;
 }
 Server.prototype.stop = function () {

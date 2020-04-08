@@ -1,5 +1,5 @@
 const index = require('./index.js');
-const {MESSAGE} = require('../constants.js');
+const {MESSAGE} = require('../../constants.js');
 
 const listeners = {
   init: function () {

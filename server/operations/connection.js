@@ -1,5 +1,5 @@
-const {useTemplate} = require('../utils.js');
-const {MESSAGE} = require('../constants.js');
+const {useTemplate} = require('../../utils.js');
+const {MESSAGE} = require('../../constants.js');
 
 const listeners = {
   init: function () {

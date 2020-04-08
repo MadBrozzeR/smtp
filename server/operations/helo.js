@@ -1,5 +1,5 @@
-const {getHelloMessage} = require('../utils.js');
-const {MESSAGE} = require('../constants.js');
+const {getHelloMessage} = require('../../utils.js');
+const {MESSAGE} = require('../../constants.js');
 
 const ERROR = {
   '501': MESSAGE[501]

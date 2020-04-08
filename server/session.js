@@ -1,8 +1,8 @@
 const Queue = require('mbr-queue').NetQueue;
 
 const {COMMANDS, Connection} = require('./operations/index.js');
-const {DEBUG_STATE, MESSAGE} = require('./constants.js');
-const {generateString} = require('./utils.js');
+const {DEBUG_STATE, MESSAGE} = require('../constants.js');
+const {generateString} = require('../utils.js');
 
 const CRLF = '\r\n';
 

@@ -16,7 +16,7 @@ function Connection (host, port = 25) {
       queue.trigger('data', parseResponse(chunk));
     })
     .on('connect', function () {
-      queue.trigger('success');
+      queue.trigger('connect');
     })
     .on('error', function (error) {
       queue.trigger('continue', error);
@@ -59,11 +59,11 @@ Connection.prototype.mail = function (from, size, callback) {
 
   return this;
 }
-Connection.prototype.rcpt = function (recipint, callback) {
+Connection.prototype.rcpt = function (recipient, callback) {
   this.queue.push(operations.rcpt, {
     name: 'RCPT',
     session: this,
-    recipint: recipint,
+    recipient: recipient,
     callback: callback
   });
 
@@ -80,7 +80,7 @@ Connection.prototype.data = function (data, callback) {
   return this;
 }
 Connection.prototype.quit = function (callback) {
-  this.queue.push({
+  this.queue.push(operations.quit, {
     name: 'QUIT',
     session: this,
     callback: callback
@@ -89,7 +89,7 @@ Connection.prototype.quit = function (callback) {
   return this;
 }
 Connection.prototype.rset = function (callback) {
-  this.queue.push({
+  this.queue.push(operations.rset, {
     name: 'RSET',
     session: this,
     callback: callback

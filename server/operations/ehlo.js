@@ -1,4 +1,4 @@
-const {getHelloMessage} = require('../utils.js');
+const {getHelloMessage} = require('../../utils.js');
 const helo = require('./helo.js');
 
 const listeners = {

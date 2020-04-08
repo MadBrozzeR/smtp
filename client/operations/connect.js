@@ -1,21 +1,29 @@
 const dns = require('dns');
 const {mxSorter, mxMapper} = require('../../utils.js');
+const common = require('./common.js');
 
 module.exports = {
   init: function () {
     const queue = this.queue;
     const params = this.params;
 
-    dns.resolveMX(params.host, function (error, servers) {
-      if (error) {
-        queue.trigger('error', error);
-      } else {
-        params.servers = servers.sort(mxSorter).map(mxMapper);
-        params.current = -1;
+    if (params.host === 'localhost') {
+      params.servers = ['localhost'];
+      params.current = -1;
 
-        queue.trigger('continue');
-      }
-    });
+      queue.trigger('continue');
+    } else {
+      dns.resolveMX(params.host, function (error, servers) {
+        if (error) {
+          queue.trigger('error', error);
+        } else {
+          params.servers = servers.sort(mxSorter).map(mxMapper);
+          params.current = -1;
+
+          queue.trigger('continue');
+        }
+      });
+    }
   },
 
   continue: function (error) {
@@ -38,13 +46,7 @@ module.exports = {
     }
   },
 
-  data: function (response) {
-    if (response.isError) {
-      this.queue.trigger('error', new Error(response.message));
-    } else {
-      this.queue.trigger('success', response.message);
-    }
-  }
+  data: common.data,
 
   error: function (error) {
     const {session} = this.params;

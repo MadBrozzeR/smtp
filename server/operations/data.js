@@ -1,5 +1,5 @@
-const {replaceDDot, checkSize} = require('../utils.js');
-const {MESSAGE} = require('../constants.js');
+const {replaceDDot, checkSize} = require('../../utils.js');
+const {MESSAGE} = require('../../constants.js');
 
 const ERROR = {
   '503': MESSAGE.RCPT_WITHOUT_TO,

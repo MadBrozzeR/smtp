@@ -1,4 +1,4 @@
-const {MESSAGE} = require('../constants.js');
+const {MESSAGE} = require('../../constants.js');
 
 const FROM_RE = /\bfrom:<(.*)>/i;
 const SIZE_RE = /\bsize=(\d+)/i;

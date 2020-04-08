@@ -1,4 +1,6 @@
-const Server = require('./server.js');
+const {test} = require('mbr-test');
+const {Server} = require('./index.js');
+const Connection = require('./client/connection.js');
 
 new Server({
   port: 2500,
@@ -7,7 +9,11 @@ new Server({
   debug: function (type, message, session) {
     console.log(type, message, session.data);
   }
-}, {
+}).on({
+  disconnect: function () {
+    this.smtp.stop();
+  },
+
   connect: function (socket) {
     console.log('Connected:', this.id, this.data);
     this.success('Hello!!!');
@@ -43,5 +49,21 @@ new Server({
     } else {
       this.success('Yay!');
     }
+  },
+
+  start: function () {
+    const connection = new Connection('localhost', 2500);
+
+    connection
+      .mail('asd')
+      .helo('my.origin')
+      .mail('forbidden')
+      .rcpt('asd@asd.d')
+      .mail('allowed')
+      .rcpt('forbidden')
+      .rcpt('allowed')
+      .data('Hello world!\r\n.')
+      .data('Hello\r\n.')
+      .quit();
   }
 }).start();

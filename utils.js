@@ -8,16 +8,6 @@ function useTemplate (template, substitutions) {
   });
 }
 
-function SMTPError (code, message) {
-  Error.prototype.constructor.call(this);
-  this.code = code;
-  this.message = message;
-}
-SMTPError.prototype = Object.create(Error.prototype);
-SMTPError.prototype.constructor = SMTPError;
-
-module.exports.SMTPError = SMTPError;
-
 function getHelloMessage (session) {
   return useTemplate(MESSAGE.GREETS, {name: session.smtp.config.name, domain: session.data.origin});
 }
@@ -34,7 +24,7 @@ function replaceDDot (message) {
 
 const SYMBOLS = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
 
-function generateString (length = 20, symbols = SYMBOLS) {
+function generateString (length = 32, symbols = SYMBOLS) {
   let result = '';
 
   while (length--) {
@@ -82,7 +72,7 @@ function parseResponse (response) {
   const result = {
     message: response.toString().trim()
   }
-  result.isError = resul.message[0] in errorCodeGroup;
+  result.isError = result.message[0] in errorCodeGroup;
 
   return result;
 }

@@ -1,5 +1,6 @@
+const {MESSAGE} = require('../../constants.js');
+
 const TO_RE = /\bto:<(.*)>/i;
-const {MESSAGE} = require('../constants.js');
 
 const ERROR = {
   '501': MESSAGE.RCPT_WITHOUT_TO,
