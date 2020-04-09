@@ -1,6 +1,6 @@
-const {test} = require('mbr-test');
-const {Server} = require('./index.js');
-const Connection = require('./client/connection.js');
+// TODO Make an actual tests
+// const {test} = require('mbr-test');
+const {Server, Client} = require('./index.js');
 
 new Server({
   port: 2500,
@@ -52,7 +52,8 @@ new Server({
   },
 
   start: function () {
-    const connection = new Connection('localhost', 2500);
+    /*
+    const connection = new Client.Connection('localhost', 2500);
 
     connection
       .mail('asd')
@@ -65,5 +66,19 @@ new Server({
       .data('Hello world!\r\n.')
       .data('Hello\r\n.')
       .quit();
+    */
+
+    Client.send({
+      origin: 'my.domain',
+      from: 'allowed',
+      to: ['forbidden'],
+      host: 'localhost',
+      port: 2500,
+      onWarning: function (warning) {
+        console.log(this.recipient, warning);
+      }
+    }, 'Hello\r\n.', function (error, message) {
+      console.log(error, message);
+    });
   }
 }).start();

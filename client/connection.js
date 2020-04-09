@@ -35,7 +35,18 @@ Connection.prototype.on = function (listeners) {
   return this;
 }
 Connection.prototype.send = function (data) {
-  this.socket.write(data + CRLF);
+  try {
+    this.socket.write(data + CRLF);
+  } catch (error) {
+    this.listeners.error instanceof Function && this.listeners.error.call({session: this}, error);
+  }
+}
+Connection.prototype.close = function () {
+  try {
+    this.socket.end();
+  } catch (error) {
+    this.listeners.error instanceof Function && this.listeners.error.call({session: this}, error);
+  }
 }
 
 Connection.prototype.helo = function (origin, callback) {
