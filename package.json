@@ -1,18 +1,19 @@
 {
   "name": "mbr-smtp",
-  "version": "0.0.1",
+  "version": "1.0.0",
   "description": "MadBrozzeR's SMTP server and client",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node server.js"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/MadBrozzeR/smtp.git"
   },
   "keywords": [
-    "smtp"
+    "smtp",
+    "mail",
+    "email"
   ],
   "author": "MadBrozzeR",
   "license": "ISC",
@@ -21,7 +22,9 @@
   },
   "homepage": "https://github.com/MadBrozzeR/smtp#readme",
   "dependencies": {
-    "mbr-queue": "^2.0.0",
+    "mbr-queue": "^2.0.0"
+  },
+  "devDependencies": {
     "mbr-test": "^1.1.2"
   }
 }
