@@ -44,9 +44,9 @@ const listeners = {
   disconnect: function (socket) {},
   message: function (message) {},
   helo: function (origin) {},
-  from: function (email, messageSize) {},
-  to: function (email) {},
-  mail: function (data) {}
+  mail: function (email, messageSize) {},
+  rcpt: function (email) {},
+  data: function (data) {}
 };
 ```
 
@@ -57,15 +57,15 @@ Set of server related event listeners.
 **error** - Some unexpected error occured.
 
 Set of client related event listeners. Make sure that you trigger this.success() or this.failure() inside any
-listener (except for disconnect and message) that has been added. Otherwise client won't get any response.
+listener (except for disconnect) that has been added. Otherwise client won't get any response.
 
 **connect** - Client connected.
 **disconnect** - Client disconnected.
 **message** - Any client command (before it's proceeded).
 **helo** - Client sent HELO or EHLO command with it's origin (domain).
-**from** - Client sent MAIL command with it's email and optionally expected data size.
-**to** - Client sent RCPT command with destination's email.
-**mail** - Client provided it's message.
+**mail** - Client sent MAIL command with it's email and optionally expected data size.
+**rcpt** - Client sent RCPT command with destination's email.
+**data** - Client provided it's message.
 
 ### Server instance methods
 

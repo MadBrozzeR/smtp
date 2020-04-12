@@ -40,8 +40,8 @@ const listeners = {
     if (error) {
       this.queue.trigger('error', error);
     } else {
-      session.smtp.listeners.from instanceof Function
-        ? session.smtp.listeners.from.call(session, this.params.from, this.params.size)
+      session.smtp.listeners.mail instanceof Function
+        ? session.smtp.listeners.mail.call(session, this.params.from, this.params.size)
         : this.queue.trigger('success');
     }
   },

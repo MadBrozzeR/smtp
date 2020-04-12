@@ -27,7 +27,7 @@ new Server({
     }
   },
 
-  from: function (from, size) {
+  mail: function (from, size) {
     if (from === 'forbidden') {
       this.failure(403, 'This email is forbiden');
     } else {
@@ -35,7 +35,7 @@ new Server({
     }
   },
 
-  to: function (recipient) {
+  rcpt: function (recipient) {
     if (recipient === 'forbidden') {
       this.failure(412, 'Forbidden recipient');
     } else {
@@ -43,7 +43,7 @@ new Server({
     }
   },
 
-  mail: function (data) {
+  data: function (data) {
     if (data === 'forbiden') {
       this.failure(403, 'Forbidden data');
     } else {

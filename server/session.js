@@ -1,6 +1,7 @@
 const Queue = require('mbr-queue').NetQueue;
 
-const {COMMANDS, Connection} = require('./operations/index.js');
+const Message = require('./operations/message.js').listeners;
+const {Connection} = require('./operations/index.js');
 const {DEBUG_STATE, MESSAGE} = require('../constants.js');
 const {generateString} = require('../utils.js');
 
@@ -24,22 +25,10 @@ Session.prototype.connection = function () {
 }
 Session.prototype.onData = function (chunk) {
   if (this.queue.isEmpty()) {
-    const session = this;
-    const message = chunk.toString().trim();
-    const args = message.split(' ');
-    const command = args.shift().toUpperCase();
-
-    if (session.smtp.listeners.message instanceof Function) {
-      session.smtp.listeners.message.call(session, message);
-    }
-
-    this.debug(DEBUG_STATE.CLIENT, message);
-
-    if (COMMANDS[command]) {
-      session.queue.push(COMMANDS[command].listeners, {session, args, message});
-    } else {
-      session.send(500, MESSAGE.UNKNOWN_COMMAND);
-    }
+    this.queue.push(Message, {
+      session: this,
+      data: chunk
+    });
   } else {
     this.debug(DEBUG_STATE.DATA, chunk);
     this.queue.trigger('continue', chunk);

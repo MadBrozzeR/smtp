@@ -35,10 +35,10 @@ const listeners = {
       const messageEnd = DATA_END_RE.exec(message);
 
       if (messageEnd) {
-        this.params.data += replaceDDot(message.substring(0, messageEnd.index));
+        this.params.data += replaceDDot(message.substring(0, messageEnd.index + messageEnd[1].length));
 
-        session.smtp.listeners.mail instanceof Function
-          ? session.smtp.listeners.mail.call(session, this.params.data)
+        session.smtp.listeners.data instanceof Function
+          ? session.smtp.listeners.data.call(session, this.params.data)
           : this.queue.trigger('success')
       } else {
         this.params.data += replaceDDot(message);
