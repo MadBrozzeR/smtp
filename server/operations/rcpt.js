@@ -19,9 +19,7 @@ const listeners = {
 
       if (regMatch) {
         this.params.recipient = regMatch[1];
-        session.smtp.listeners.rcpt instanceof Function
-          ? session.smtp.listeners.rcpt.call(session, regMatch[1])
-          : this.queue.trigger('success');
+        session.smtp.emit(session, 'rcpt', regMatch[1]) && this.queue.trigger('success');
       } else {
         // Deny if recipient has not been proveded.
         this.queue.trigger('error', 501);
@@ -39,7 +37,6 @@ const listeners = {
 
     session.data.recipients.push(recipient);
     session.ok(message);
-    this.queue.next();
   }
 };
 

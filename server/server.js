@@ -18,16 +18,20 @@ function connectionListener (socket) {
     session.onData(chunk);
   });
   socket.on('close', function () {
-    (smtp.listeners.disconnect instanceof Function) && smtp.listeners.disconnect.call(session, socket);
+    smtp.emit(session, 'disconnect', socket);
   });
   socket.on('error', function (error) {
-    (smtp.listeners.error instanceof Function) && smtp.listeners.error.call(session, error)
+    smtp.emit(session, 'error', error);
   });
 
   session.connection();
 }
 
 function Server (config = {}, listeners = {}) {
+  if (this.constructor !== Server) {
+    return new Server(config, listeners);
+  }
+
   this.config = Object.assign({}, DEFAULT_CONFIG, config);
   this.server = net.createServer(connectionListener.bind(this));
   this.listeners = listeners;
@@ -35,26 +39,44 @@ function Server (config = {}, listeners = {}) {
   const smtp = this;
 
   this.server.on('close', function () {
-    smtp.listeners.stop instanceof Function && smtp.listeners.stop.call(smtp);
+    smtp.emit(smtp, 'stop');
   });
   this.server.on('error', function (error) {
-    smtp.listeners.error instanceof Function && smtp.listeners.error.call(smtp, error);
+    smtp.emit(smtp, 'error', error);
   });
 }
-Server.prototype.on = function (listeners) {
-  listeners && Object.assign(this.listeners, listeners);
+Server.prototype.on = function (listeners = {}) {
+  if (listeners instanceof Function) {
+    this.listeners = listeners;
+  } else {
+    this.listeners = Object.assign({}, this.listeners, listeners);
+  }
+
   return this;
 }
 Server.prototype.start = function () {
-  const startListener = this.listeners.start instanceof Function ? this.listeners.start.bind(this) : null;
+  const server = this;
 
-  this.server.listen(this.config.port, this.config.host, startListener);
+  this.server.listen(this.config.port, this.config.host, function () {
+    server.emit(server, 'start');
+  });
 
   return this;
 }
 Server.prototype.stop = function () {
   this.server.close();
   return this;
+}
+Server.prototype.emit = function (context, type, param) {
+  if (this.listeners instanceof Function) {
+    return this.listeners.call(context, type, param);
+  }
+
+  if (this.listeners[type] instanceof Function) {
+    return this.listeners[type].call(context, param);
+  }
+
+  return true;
 }
 
 module.exports = Server;

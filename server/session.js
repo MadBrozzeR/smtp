@@ -41,6 +41,7 @@ Session.prototype.write = function (data) {
     return;
   }
 
+  this.smtp.emit(this, 'response', data);
   this.debug(DEBUG_STATE.SERVER, data);
   this.socket.write(data + CRLF);
 }
@@ -61,6 +62,7 @@ Session.prototype.send = function (code, message) {
 }
 Session.prototype.ok = function (message) {
   this.send(250, message);
+  this.queue.next();
 
   return this;
 }

@@ -13,9 +13,7 @@ const listeners = {
 
     if (args[0]) {
       this.params.origin = args[0];
-      session.smtp.listeners.helo instanceof Function
-        ? session.smtp.listeners.helo.call(session, args[0])
-        : this.queue.trigger('success');
+      session.smtp.emit(session, 'helo', args[0]) && this.queue.trigger('success');
     } else {
       this.queue.trigger('error', 501);
     }
@@ -33,7 +31,6 @@ const listeners = {
     message || (message = getHelloMessage(session));
 
     session.ok(message);
-    this.queue.next();
   }
 };
 

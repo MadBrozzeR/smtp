@@ -19,7 +19,6 @@ const listeners = {
     }
 
     session.ok(message);
-    this.queue.next();
   }
 };
 

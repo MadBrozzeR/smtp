@@ -40,9 +40,10 @@ const listeners = {
     if (error) {
       this.queue.trigger('error', error);
     } else {
-      session.smtp.listeners.mail instanceof Function
-        ? session.smtp.listeners.mail.call(session, this.params.from, this.params.size)
-        : this.queue.trigger('success');
+      session.smtp.emit(session, 'mail', {
+        from: this.params.from,
+        size: this.params.size,
+      }) && this.queue.trigger('success');
     }
   },
 
@@ -57,7 +58,6 @@ const listeners = {
     size && (session.data.size = size);
 
     session.ok(message);
-    this.queue.next();
   }
 };
 

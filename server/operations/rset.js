@@ -2,7 +2,6 @@ const listeners = {
   init: function () {
     this.params.session.initialize();
     this.params.session.ok();
-    this.queue.next();
   }
 };
 

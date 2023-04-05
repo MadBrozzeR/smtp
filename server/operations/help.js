@@ -10,7 +10,7 @@ const listeners = {
       session.send(211, Object.keys(commands));
       this.queue.next();
     } else {
-      const command = args[0];
+      const command = args[0].toUpperCase();
       if (commands[command]) {
         const help = commands[command].help;
 

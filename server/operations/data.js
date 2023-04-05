@@ -17,9 +17,7 @@ const listeners = {
 
     if (session.data.recipients.length) {
       // Start.
-      session.smtp.listeners.dataStart instanceof Function
-        ? session.smtp.listeners.dataStart.call(session)
-        : session.send(354, MESSAGE.DATA_INPUT);
+      session.smtp.emit(session, 'dataStart') && session.send(354, MESSAGE.DATA_INPUT);
     } else {
       // Deny if RCPT command has not been received.
       this.queue.trigger('error', 503);
@@ -37,9 +35,7 @@ const listeners = {
       if (messageEnd) {
         this.params.data += replaceDDot(message.substring(0, messageEnd.index + messageEnd[1].length));
 
-        session.smtp.listeners.data instanceof Function
-          ? session.smtp.listeners.data.call(session, this.params.data)
-          : this.queue.trigger('success')
+        session.smtp.emit(session, 'data', this.params.data) && this.queue.trigger('success');
       } else {
         this.params.data += replaceDDot(message);
       }
@@ -58,7 +54,6 @@ const listeners = {
 
     session.data.message = data;
     session.ok(message);
-    this.queue.next();
   }
 };
 

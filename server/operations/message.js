@@ -12,9 +12,7 @@ const listeners = {
 
     session.debug(DEBUG_STATE.CLIENT, message);
 
-    session.smtp.listeners.message instanceof Function
-      ? session.smtp.listeners.message.call(session, message)
-      : this.queue.trigger('success');
+    session.smtp.emit(session, 'message', message) && this.queue.trigger('success');
   },
 
   success: function () {
