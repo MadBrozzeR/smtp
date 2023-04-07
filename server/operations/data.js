@@ -27,6 +27,7 @@ const listeners = {
   continue: function (chunk) {
     const {session} = this.params;
     this.params.size += chunk.length;
+    session.smtp.emit(session, 'dataChunk', chunk);
 
     if (checkSize(this.params, session)) {
       const message = chunk.toString().trim();
@@ -53,6 +54,7 @@ const listeners = {
     const {data, session} = this.params;
 
     session.data.message = data;
+    session.data.received = true;
     session.ok(message);
   }
 };

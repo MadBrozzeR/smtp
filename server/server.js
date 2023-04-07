@@ -68,15 +68,21 @@ Server.prototype.stop = function () {
   return this;
 }
 Server.prototype.emit = function (context, type, param) {
-  if (this.listeners instanceof Function) {
-    return this.listeners.call(context, type, param);
-  }
+  try {
+    if (this.listeners instanceof Function) {
+      return this.listeners.call(context, type, param);
+    }
 
-  if (this.listeners[type] instanceof Function) {
-    return this.listeners[type].call(context, param);
-  }
+    if (this.listeners[type] instanceof Function) {
+      return this.listeners[type].call(context, param);
+    }
 
-  return true;
+    return true;
+  } catch (error) {
+    if (type !== 'error') {
+      this.emit(context, 'error', error);
+    }
+  }
 }
 
 module.exports = Server;

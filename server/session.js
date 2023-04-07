@@ -8,13 +8,17 @@ const {generateString} = require('../utils.js');
 const CRLF = '\r\n';
 
 function Session (socket, smtp) {
-  socket.setTimeout(smtp.config.timeout, function () {socket.end();});
+  const session = this;
   this.id = generateString();
   this.socket = socket;
   this.smtp = smtp;
   this.queue = new Queue();
   this.done = false;
   this.initialize();
+
+  socket.setTimeout(smtp.config.timeout, function () {
+    session.emit(session, 'timeout') && socket.end();
+  });
 }
 Session.prototype.connection = function () {
   const session = this;
@@ -85,7 +89,8 @@ Session.prototype.failure = function (code, message) {
 }
 Session.prototype.initialize = function () {
   this.data = {
-    recipients: []
+    recipients: [],
+    received: false,
   };
 
   return this;
