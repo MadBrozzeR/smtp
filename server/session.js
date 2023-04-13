@@ -17,7 +17,7 @@ function Session (socket, smtp) {
   this.initialize();
 
   socket.setTimeout(smtp.config.timeout, function () {
-    session.emit(session, 'timeout') && socket.end();
+    smtp.emit(session, 'timeout') && socket.end();
   });
 }
 Session.prototype.connection = function () {
