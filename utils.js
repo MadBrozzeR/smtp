@@ -48,6 +48,16 @@ const errorCodeGroup = {
   '5': null
 }
 
+function checkMessageIsComplete (message) {
+  const newLinePos = message.lastIndexOf('\r\n');
+
+  if (newLinePos > -1) {
+    return message[newLinePos + 2 + 3] !== '-';
+  }
+
+  return message[3] !== '-';
+}
+
 function parseResponse (response) {
 // Do we really need this all? Let's simplify.
 /*
@@ -69,12 +79,13 @@ function parseResponse (response) {
     result.isError = true;
   }
 */
-  const result = {
-    message: response.toString().trim()
-  }
-  result.isError = result.message[0] in errorCodeGroup;
+  const message = response.toString().trim();
 
-  return result;
+  return {
+    message: message,
+    isError: message[0] in errorCodeGroup,
+    isComplete: checkMessageIsComplete(message),
+  };
 }
 
 module.exports = {};

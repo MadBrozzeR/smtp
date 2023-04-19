@@ -1,37 +1,40 @@
 module.exports = {
   data: function (response) {
-    if (response.isError) {
-      this.queue.trigger('error', new Error(response.message));
+    if (!this.data) {
+      this.data = { message: response.message };
+    } else if (!this.data.message) {
+      this.data.message = response.message;
     } else {
-      this.queue.trigger('success', response.message);
+      this.data.message += '\r\n' + response.message;
+    }
+
+    if (!response.isComplete) {
+      return;
+    }
+
+    if (response.isError) {
+      this.queue.trigger('error', new Error(this.data.message));
+    } else {
+      this.queue.trigger('success', this.data.message);
     }
   },
 
   error: function (error) {
-    const {session, callback} = this.params;
+    const {session, reject} = this.params;
 
-    if (session.listeners.error instanceof Function) {
-      session.listeners.error.call(this.params, error);
-    }
-
-    if (callback instanceof Function) {
-      callback.call(this.params, error);
-    }
+    reject(error);
+    session.emit(this.params, 'error', error);
 
     this.queue.next();
   },
 
   success: function (message) {
-    const {session, callback} = this.params;
+    const {session, resolve} = this.params;
 
-    if (session.listeners.success instanceof Function) {
-      session.listeners.success.call(this.params, message);
-    }
-
-    if (callback instanceof Function) {
-      callback.call(this.params, null, message);
-    }
+    session.emit(this.params, 'success', message);
 
     this.queue.next();
+
+    resolve(message);
   }
 };

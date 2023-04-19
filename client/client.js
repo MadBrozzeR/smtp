@@ -1,4 +1,4 @@
-const Connection = require('./connection.js');
+const Session = require('./session.js');
 
 const DOT_RE = /(^|\n)\.([^\r\n])/g;
 
@@ -12,13 +12,14 @@ function useCallback (context, callback, error, data) {
   }
 }
 
-function send (params, data, callback) {
+function send (params, data) {
   const origin = params.origin;
   const recipients = params.to;
   const from = params.from || '';
   const host = params.host;
   const port = params.port;
   const onWarning = params.onWarning instanceof Function ? params.onWarning : null;
+  const callback = params.callback;
 
   const isValid = !!(
     params.origin &&
@@ -28,20 +29,18 @@ function send (params, data, callback) {
   );
 
   if (!isValid) {
-    return;
+    return Promise.reject(new Error('`origin`, `to`, `data` and `host` parameters and at least one recipient are required'));
   }
 
-  const connection = new Connection(host, port).on({
+  const session = new Session().on({
     error: function (error) {
       switch (this.name) {
         case undefined:
           useCallback(this, callback, error);
-          connection.queue.clear();
           break;
 
         case 'QUIT':
           useCallback(this, callback, error);
-          connection.queue.clear();
           connection.close();
           break;
 
@@ -61,19 +60,30 @@ function send (params, data, callback) {
         useCallback(connection, callback, null, message);
       }
     }
-  })
-    .helo(origin)
-    .mail(from, Buffer.byteLength(data));
+  });
 
-  for (let index = 0 ; index < recipients.length ; ++index) {
-    connection.rcpt(recipients[index]);
-  }
-
-  connection.data(data).quit();
+  return session.connect(host, port)
+    .then(function () {
+      return session.ehlo(origin);
+    })
+    .then(function () {
+      return session.mail(from, Buffer.byteLength(data));
+    })
+    .then(function () {
+      for (let index = 0 ; index < recipients.length ; ++index) {
+        session.rcpt(recipients[index]);
+      }
+    })
+    .then(function () {
+      return session.data(data);
+    })
+    .then(function () {
+      return session.quit();
+    });
 }
 
 module.exports = {
   prepare,
-  Connection,
+  Session,
   send
 };

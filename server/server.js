@@ -80,7 +80,7 @@ Server.prototype.emit = function (context, type, param) {
     return true;
   } catch (error) {
     if (type !== 'error') {
-      this.emit(context, 'error', error);
+      return this.emit(context, 'error', error);
     }
   }
 }
