@@ -6,16 +6,14 @@ const {generateString, parseResponse} = require('../utils.js');
 const CRLF = '\r\n';
 
 function Session () {
+  if (this.constructor !== Session) {
+    return new Session();
+  }
+
   const queue = this.queue = new Queue();
   this.id = generateString();
   this.socket = new net.Socket();
   this.listeners = {};
-
-  /*
-  queue.debug = function (type, element) {
-    console.log(type, element && element.params && element.params.name);
-  }
-  */
 
   const session = this;
 
