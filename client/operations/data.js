@@ -20,12 +20,15 @@ module.exports = {
 
       switch (code) {
         case DATA_CODE:
+          session.transmittingData = true;
           session.send(data);
           break;
         case OK_CODE:
+          session.transmittingData = false;
           this.queue.trigger('success', response.message);
           break;
         default:
+          session.transmittingData = false;
           this.queue.trigger('error', new Error('Unexpected response: ' + response.message));
           break;
       }

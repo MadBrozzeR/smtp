@@ -13,7 +13,7 @@ module.exports = {
 
       queue.trigger('continue');
     } else {
-      dns.resolveMX(params.host, function (error, servers) {
+      dns.resolveMx(params.host, function (error, servers) {
         if (error) {
           queue.trigger('error', error);
         } else {

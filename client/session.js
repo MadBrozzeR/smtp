@@ -14,6 +14,7 @@ function Session () {
   this.id = generateString();
   this.socket = new net.Socket();
   this.listeners = {};
+  this.transmittingData = false;
 
   const session = this;
 
@@ -54,7 +55,11 @@ Session.prototype.on = function (listeners) {
 }
 Session.prototype.send = function (data) {
   try {
-    this.emit(this, 'message', data);
+    const eventType = this.transmittingData
+      ? 'dataChunk'
+      : 'message';
+
+    this.emit(this, eventType, data);
     this.socket.write(data + CRLF);
   } catch (error) {
     this.listeners.error instanceof Function && this.listeners.error.call({session: this}, error);
